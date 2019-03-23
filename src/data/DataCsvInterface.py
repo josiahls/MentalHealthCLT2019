@@ -47,6 +47,7 @@ class DataCsvInterface:
     VARIABLE_NAMES = ['income', 'bodyweight', 'prostitution_legal', 'pay_for_sex', 'friends', 'social_fear',
                       'depressed', 'employment', 'job_title', 'edu_level', 'what_help_from_others',
                       'improve_yourself_how', 'virgin']
+    ONE_WAY_NAMES = ['edu_level', 'virgin']
     FIXED_NAMES = ['gender', 'sexuallity', 'age', 'race']
 
     @staticmethod

@@ -41,6 +41,16 @@ class BayesianRecommender:
             :return: The value of the metric used by the model to define its performance.
                      Expected to be the validation acc.
             """
+            # Fill in any missing data for running predictions
+            for key in data:
+                if key not in params:
+                    params[key] = data[key]
+            # If any variables are being shifted back, then PUNISH
+            for key in [_ for _ in params if _ in DataCsvInterface.ONE_WAY_NAMES]:
+                if params[key] > data[key]:
+                    print('Punishing')
+                    return 0
+
             # Note we are trying to maximize the first label (not commit suicide)
             maximizing_value = float(model.predict(params)[2][0])
             print(f'Value to maximize: {maximizing_value}')
@@ -108,7 +118,9 @@ class BayesianRecommender:
                 data_parsed += element
 
         data_init = {key: data_parsed[i] for i, key in enumerate(data.names)}
-        column_range = bayesian_optimizer.get_ranges(data.names, model.input_data.train_ds)
+        cr = bayesian_optimizer.get_ranges(data.names, model.input_data.train_ds)
+        column_range = {key: cr[key] for key in cr if key not in DataCsvInterface.FIXED_NAMES}
+
         model.train(10)
 
         bayesian_optimizer.run_optimization(model, data_init, column_range)

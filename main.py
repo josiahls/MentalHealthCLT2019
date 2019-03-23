@@ -23,17 +23,18 @@ if __name__ == '__main__':
     # Setup arguments
     parser = argparse.ArgumentParser(description='Upper level system for suicide prediction, and recommendation.')
 
+    group = parser.add_mutually_exclusive_group(required=True)
     # Optional positional argument
-    parser.add_argument('--train_model_test', type=int,
-                        help='Run a model and specify the number of epochs')
+    group.add_argument('--train_model_test', type=int,
+                       help='Run a model and specify the number of epochs')
 
     # Optional positional argument
-    parser.add_argument('--run_bayes_model_generation', type=int,
-                        help='Run the bayes model evaluation and specify the number of epochs')
+    group.add_argument('--run_bayes_model_generation', type=int,
+                       help='Run the bayes model evaluation and specify the number of epochs')
 
     # Optional positional argument
-    parser.add_argument('--run_recommendations', type=str,
-                        help='Run the recommendation engine, add "run"')
+    group.add_argument('--run_recommendations', type=str,
+                       help='Run the recommendation engine, add "run"')
 
     args = parser.parse_args()
 

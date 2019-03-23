@@ -22,8 +22,8 @@ class DataCsvInterface:
         CONTINUOUS_NAMES: the columns to handled as continuous. If None, the non-cat, non-dep cols become continuous
     """
     ABS_CSV_PATH = str(Path(__file__).parents[0])
-    CSV_FILE_NAME = "foreveralone_shuf.csv"
-    DEPENDENT_NAME = "attempt_suicide"
+    CSV_FILE_NAME = "foreveralone_shuf_cleaned.csv"
+    DEPENDENT_NAME = "attempt_suicide_categorical"
     CATEGORY_NAMES = [e+"_categorical" for e in ['gender', 'sexuallity', 'race', 'virgin', 'prostitution_legal', 'pay_for_sex', 'social_fear', 'depressed', 'employment', 'edu_level', 'bodyweight', 'income']]
     CONTINUOUS_NAMES = ['age', 'income_float', 'friends']
     NF1_NAMES = ['what_help_from_others', 'improve_yourself_how']

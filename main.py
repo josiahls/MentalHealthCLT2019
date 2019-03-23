@@ -1,4 +1,10 @@
 #!/usr/bin/python
+"""
+For running a single model do:
+`main.py --train_model_test 10`
+
+
+"""
 
 import sys
 import argparse

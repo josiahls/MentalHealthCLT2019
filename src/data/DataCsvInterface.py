@@ -35,8 +35,8 @@ class DataCsvInterface:
     # NF1_CONTINUOUS_NAMES = []
     # NF1_CATEGORICAL_NAMES = ['improve_yourself_how', 'what_help_from_others']
     #
-    # CATEGORY_NAMES += ['improve_yourself_how_'+str(i) for i in range(1,53+1)]
-    # CATEGORY_NAMES += ['what_help_from_others_' + str(i) for i in range(1, 45 + 1)]
+    CATEGORY_NAMES += ['improve_yourself_how_nf1tight_'+str(i) for i in range(1,5+1)]
+    CATEGORY_NAMES += ['what_help_from_others_nf1tight_' + str(i) for i in range(1, 6+1)]
 
 
 

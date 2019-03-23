@@ -1,3 +1,4 @@
+from fastai.callbacks import EarlyStoppingCallback
 from fastai.tabular import *
 
 from src.classifier.ModelAbstract import ModelAbstract
@@ -31,7 +32,10 @@ class CustomTabularModel(ModelAbstract):
             print('Using dropout')
             dropout = float(args[arg])
 
-        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout)
+        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout,
+                                     callback_fns=[partial(EarlyStoppingCallback, monitor='accuracy', min_delta=0.01,
+                                                           patience=3)])
+
 
     def train(self, epochs=3, k=1) -> float:
         k_accuracy = []

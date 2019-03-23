@@ -121,7 +121,7 @@ class BayesianRecommender:
         cr = bayesian_optimizer.get_ranges(data.names, model.input_data.train_ds)
         column_range = {key: cr[key] for key in cr if key not in DataCsvInterface.FIXED_NAMES}
 
-        model.train(10)
+        model.train(5)
 
         bayesian_optimizer.run_optimization(model, data_init, column_range)
 

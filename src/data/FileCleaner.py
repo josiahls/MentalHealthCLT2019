@@ -22,7 +22,16 @@ class FileCleaner:
 
         return pd.Series(res)
 
-    def smart_s2n(st):
+    def smart_s2n(st, colname):
+        fullmatches={"Yes":1, "No":0, "Associate degree": 4, "Bach.* degree": 5, "Master.* degree": 7, "Professional Degree": 6, "Some college.*": 3, "High school.*":2, "Some high school":0, "Trade.*":1}
+
+        if colname == 'virgin':
+            fullmatches = {"Yes": 0, "No": 1} # one-way is different
+
+        for candidate in fullmatches:
+            if re.match("^"+candidate+"$", st):
+                return fullmatches[candidate]
+
         stm = st.replace(",", "")
         stm = stm.replace("$", "")
         stm = stm.replace(" ", "")
@@ -86,7 +95,7 @@ class FileCleaner:
                 # for those that are not 1NF and that are CONTINUOUS_COLS, see if the whole cell can be converted to a float.
                 #print(CONTINUOUS_COLS)
                 if series.name in CONTINUOUS_COLS:
-                    te = FileCleaner.smart_s2n(el)
+                    te = FileCleaner.smart_s2n(el, colname=series.name)
                     if isinstance(te, float):
                         if not isfloatcol:
                             floatseries = pd.Series([np.nan for _ in range(len(series))], name=series.name + "_float")
@@ -211,8 +220,11 @@ if __name__ == '__main__':
     # print(cleanseries)
     assert (cleanseries .equals( pd.DataFrame(pd.Series([1,2,1], name='animaltype_categorical')) ))
 
-    print(FileCleaner.smart_s2n("$0"))
-    assert (FileCleaner.smart_s2n("$0") == 0)
+    print(FileCleaner.smart_s2n("$0", "animaltype"))
+    assert (FileCleaner.smart_s2n("$0", "animaltype") == 0)
+    assert (FileCleaner.smart_s2n("Yes", 'virgin') == 0)
+    assert (FileCleaner.smart_s2n("Yes", 'anythingelse') == 1)
+
 
     DROP_COLS = ["time", 'job_title']  # need to put in LEAVE_COLS also, not sure why
     LEAVE_COLS = [] + DROP_COLS # leave them as non-numeric to be processed later or dropped here

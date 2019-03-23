@@ -118,3 +118,4 @@ class BayesianRecommender:
         now = datetime.now()
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
         json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(bayesian_optimizer.results))
+        model.input_data.save(log_path + "/input_information" + now.strftime("%Y%m%d-%H%M%S.%f"))

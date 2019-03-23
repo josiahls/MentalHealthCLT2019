@@ -55,7 +55,7 @@ class BayesianSearcher:
             random_state=1,
         )
 
-        log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
+        log_path = os.path.join(str(Path(__file__).parents[0]), "raw_logs")
         logger = JSONLogger(path=log_path+"/logs.json")
         self.optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
@@ -66,6 +66,7 @@ class BayesianSearcher:
 
         sorted_results = sorted(self.optimizer.res, key=lambda k: k['target'])
 
+        print('Finished')
         for parameter in list(reversed(sorted_results))[:num_top_results]:
             print(f'Keeping results: {parameter}')
             self.results.append(parameter)
@@ -83,11 +84,12 @@ class BayesianSearcher:
         print(str(bayesian_optimizer.results))
 
         now = datetime.now()
-        log_path = os.path.join(str(Path(__file__).parents[0]), "raw_logs")
+        log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
         json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(bayesian_optimizer.results))
 
     @staticmethod
     def get_top_results_of_opts(optimizers: list, num_top_results, save_results=False):
+        print('Getting top results')
         sorted_results = []
         results = []
 

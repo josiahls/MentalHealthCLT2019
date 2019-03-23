@@ -22,10 +22,16 @@ class CustomTabularModel(ModelAbstract):
         """
         self.args = args
         layers = []
-        for arg in args:
+        dropout = 0.5
+
+        for arg in [_ for _ in args if str(_).__contains__('layer')]:
             layers.append(int(args[arg]))
 
-        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=0.5)
+        for arg in [_ for _ in args if str(_).__contains__('dropout')]:
+            print('Using dropout')
+            dropout = float(args[arg])
+
+        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout)
 
     def train(self, epochs=3, k=1) -> float:
         k_accuracy = []
@@ -46,5 +52,5 @@ class CustomTabularModel(ModelAbstract):
 
     @staticmethod
     def test_model(epochs):
-        model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20})
+        model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20, 'dropout':0.5})
         print(model.train(epochs, 10))

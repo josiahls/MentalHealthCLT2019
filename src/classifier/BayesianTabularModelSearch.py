@@ -86,10 +86,10 @@ class BayesianSearcher:
             os.mkdir(os.path.join(str(Path(__file__).parents[0]), "logs"))
 
         bayesian_optimizer = BayesianSearcher(epochs)
-        model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20})
-        # bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'layer2': (1, 400), 'layer3': (1, 400)})
-        # bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'layer2': (1, 400)})
-        bayesian_optimizer.run_optimization(model, {'layer1': (1, 400)})
+        model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20, 'dropout': 0.5})
+        # bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'layer2': (1, 400), 'layer3': (1, 400), 'dropout': 0.5})
+        # bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'layer2': (1, 400), 'dropout': 0.5})
+        bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'dropout': (0, 1)})
 
         print(str(bayesian_optimizer.results))
 

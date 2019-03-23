@@ -15,6 +15,7 @@ For running the bayesian recommender do:
 import sys
 import argparse
 
+from src.classifier.ThreadedBayesianSearcher import ThreadedBayesianSearcher
 from src.classifier.BayesianTabularModelSearch import BayesianSearcher
 from src.classifier.CustomTabularModel import CustomTabularModel
 from src.recommender.BayesianRecommender import BayesianRecommender
@@ -35,6 +36,9 @@ if __name__ == '__main__':
     # Optional positional argument
     group.add_argument('--run_recommendations', type=str,
                        help='Run the recommendation engine, add "run"')
+    # Optional positional argument
+    group.add_argument('--run_threaded_bayes_model_generation', type=int,
+                       help='Run the recommendation engine, add "run"')
 
     args = parser.parse_args()
 
@@ -45,3 +49,5 @@ if __name__ == '__main__':
         BayesianSearcher.run_bayesian_search(args.run_bayes_model_generation)
     elif args.run_recommendations is not None:
         BayesianRecommender.test_recommender()
+    elif args.run_threaded_bayes_model_generation is not None:
+        ThreadedBayesianSearcher.run(args.run_threaded_bayes_model_generation)

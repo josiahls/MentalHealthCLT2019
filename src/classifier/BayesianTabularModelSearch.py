@@ -12,12 +12,15 @@ from src.data.DataCsvInterface import DataCsvInterface
 
 
 class BayesianSearcher:
-    def __init__(self, epochs):
+    def __init__(self, epochs, rand_points=0, iterations=2):
         self.results = []
         self.epochs = epochs
+        self.rand_points = rand_points
+        self.iterations = iterations
+        self.optimizer = None
 
-    def run_optimization(self, model, evaluation_param_bounds: dict,
-                         num_top_results: int = 1):
+    def run_optimization(self, model = None, evaluation_param_bounds: dict = None,
+                         num_top_results: int = 1, k_folds = 10):
         """
         Uses the BayesianOptimization library to find the best set of parameters given a range that generates the
         highest value of the model's metric.
@@ -31,6 +34,8 @@ class BayesianSearcher:
         :param num_top_results: The number of results for this method to save. Defaults to a single top result
         :return: None, once the method is finished, the result's field should be populated.
         """
+        if model is None:
+            model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20, 'dropout': 0.5})
 
         def maximization_function(**params: dict):
             """
@@ -42,24 +47,26 @@ class BayesianSearcher:
             """
             model.reset_params(params)
 
-            return model.train(epochs=self.epochs, k=10)
+            return model.train(epochs=self.epochs, k=k_folds)
 
-        optimizer = BayesianOptimization(
+        self.optimizer = BayesianOptimization(
             f=maximization_function,
             pbounds=evaluation_param_bounds,
             random_state=1,
         )
 
-        logger = JSONLogger(path="./logs.json")
-        optimizer.subscribe(Events.OPTMIZATION_END, logger)
+        log_path = os.path.join(str(Path(__file__).parents[0]), "raw_logs")
+        logger = JSONLogger(path=log_path+"/logs.json")
+        self.optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
-        optimizer.maximize(
-            init_points=0,
-            n_iter=1,
+        self.optimizer.maximize(
+            init_points=self.rand_points,
+            n_iter=self.iterations,
         )
 
-        sorted_results = sorted(optimizer.res, key=lambda k: k['target'])
+        sorted_results = sorted(self.optimizer.res, key=lambda k: k['target'])
 
+        print('Finished')
         for parameter in list(reversed(sorted_results))[:num_top_results]:
             print(f'Keeping results: {parameter}')
             self.results.append(parameter)
@@ -68,7 +75,7 @@ class BayesianSearcher:
         if not os.path.exists("logs"):
             os.mkdir("logs")
 
-        bayesian_optimizer = BayesianSearcher()
+        bayesian_optimizer = BayesianSearcher(10)
         model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20})
         bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'layer2': (1, 400), 'layer3': (1, 400)})
         bayesian_optimizer.run_optimization(model, {'layer1': (1, 400), 'layer2': (1, 400)})
@@ -78,7 +85,28 @@ class BayesianSearcher:
 
         now = datetime.now()
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(bayesian_optimizer.results))
+        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(bayesian_optimizer.results))
+
+    @staticmethod
+    def get_top_results_of_opts(optimizers: list, num_top_results, save_results=False):
+        print('Getting top results')
+        sorted_results = []
+        results = []
+
+        for optimizer in optimizers:
+            sorted_results += sorted(optimizer.optimizer.res, key=lambda k: k['target'])
+
+        for parameter in list(reversed(sorted_results))[:num_top_results]:
+            print(f'Keeping results: {parameter}')
+            results.append(parameter)
+
+        print(str(results))
+
+        if save_results:
+            now = datetime.now()
+            log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
+            json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(results))
+        return results
 
     @staticmethod
     def run_bayesian_search(epochs):
@@ -95,4 +123,4 @@ class BayesianSearcher:
 
         now = datetime.now()
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(bayesian_optimizer.results))
+        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + '.json', pd.DataFrame(bayesian_optimizer.results))

@@ -41,6 +41,16 @@ class BayesianRecommender:
             :return: The value of the metric used by the model to define its performance.
                      Expected to be the validation acc.
             """
+            # Fill in any missing data for running predictions
+            for key in data:
+                if key not in params:
+                    params[key] = data[key]
+            # If any variables are being shifted back, then PUNISH
+            for key in [_ for _ in params if _ in DataCsvInterface.ONE_WAY_NAMES]:
+                if params[key] > data[key]:
+                    print('Punishing')
+                    return 0
+
             # Note we are trying to maximize the first label (not commit suicide)
             maximizing_value = float(model.predict(params)[2][0])
             print(f'Value to maximize: {maximizing_value}')
@@ -50,6 +60,7 @@ class BayesianRecommender:
         optimizer = BayesianOptimization(
             f=maximization_function,
             pbounds=evaluation_param_bounds,
+            verbose=2,
             random_state=1,
         )
 
@@ -57,15 +68,15 @@ class BayesianRecommender:
         maximizing_value = float(model.predict(data)[2][0])
         print(f'Value to maximize: {maximizing_value}')
 
-        optimizer.probe(params=data)
+        # optimizer.probe(params=data)
 
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        logger = JSONLogger(path=log_path + "/logs.json")
-        optimizer.subscribe(Events.OPTMIZATION_END, logger)
+        logger = JSONLogger(path=log_path + "/raw_logs.json")
+        optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
         optimizer.maximize(
-            init_points=1,
-            n_iter=1,
+            init_points=2,
+            n_iter=3,
         )
 
         sorted_results = sorted(optimizer.res, key=lambda k: k['target'])
@@ -107,8 +118,10 @@ class BayesianRecommender:
                 data_parsed += element
 
         data_init = {key: data_parsed[i] for i, key in enumerate(data.names)}
-        column_range = bayesian_optimizer.get_ranges(data.names, model.input_data.train_ds)
-        model.train(10)
+        cr = bayesian_optimizer.get_ranges(data.names, model.input_data.train_ds)
+        column_range = {key: cr[key] for key in cr if key not in DataCsvInterface.FIXED_NAMES}
+
+        model.train(5)
 
         bayesian_optimizer.run_optimization(model, data_init, column_range)
 
@@ -116,4 +129,5 @@ class BayesianRecommender:
 
         now = datetime.now()
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(bayesian_optimizer.results))
+        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(bayesian_optimizer.results))
+        model.input_data.save(log_path + "/input_information" + now.strftime("%Y%m%d-%H%M%S.%f"))

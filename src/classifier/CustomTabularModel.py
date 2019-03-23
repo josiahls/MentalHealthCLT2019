@@ -25,7 +25,7 @@ class CustomTabularModel(ModelAbstract):
         for arg in args:
             layers.append(int(args[arg]))
 
-        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy)
+        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=0.5)
 
     def train(self, epochs=3, k=1) -> float:
         k_accuracy = []

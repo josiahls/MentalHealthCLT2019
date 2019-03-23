@@ -62,3 +62,16 @@ fabric.properties
 /src/data/foreveralone_shuf.csv
 /src/data/testcleaner.log
 /src/data/cleaner.log
+/src/classifier/logs/*
+/src/recommender/logs/*
+.DS_Store
+src/.DS_Store
+src/__pycache__/
+src/classifier/.DS_Store
+src/classifier/__pycache__/
+src/classifier/logs/
+src/data/__pycache__/
+src/data/models/
+src/recommender/__pycache__/
+src/recommender/logs/
+src/recommender/raw_logs/

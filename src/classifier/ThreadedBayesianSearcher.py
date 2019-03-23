@@ -24,7 +24,7 @@ class ThreadedBayesianSearcher:
         return optimizers
 
     @staticmethod
-    def run(epochs, n_searchers = 2):
+    def run(epochs, n_searchers = 5):
         p_bounds = [
             {'layer1': (1, 400), 'dropout': (0, 1)},
             {'layer1': (1, 400), 'layer2': (1, 400), 'layer3': (1, 400), 'dropout': (0, 1)},
@@ -40,7 +40,7 @@ class ThreadedBayesianSearcher:
         for target in targets:
             optimizer_threads.append(threading.Thread(target=partial(target,
                                                       evaluation_param_bounds=p_bounds_iter.__next__(),
-                                                      num_top_results=2, k_folds=1)))
+                                                      num_top_results=2, k_folds=10)))
             optimizer_threads[-1].daemon = True
             optimizer_threads[-1].start()
 

@@ -15,11 +15,11 @@ from src.classifier.CustomTabularModel import CustomTabularModel
 class ThreadedBayesianSearcher:
 
     @staticmethod
-    def get_searchers(epochs, n_searchers):
+    def get_searchers(epochs, n_searchers, rand_points=0, iterations=1):
         optimizers = []
 
         for i in range(n_searchers):
-            bayesian_optimizer = BayesianSearcher(epochs)
+            bayesian_optimizer = BayesianSearcher(epochs, rand_points=rand_points, iterations=iterations)
             optimizers.append(bayesian_optimizer)
         return optimizers
 
@@ -32,7 +32,7 @@ class ThreadedBayesianSearcher:
         ]
         p_bounds_iter = itertools.cycle(p_bounds)
 
-        optimizers = ThreadedBayesianSearcher.get_searchers(epochs, n_searchers)
+        optimizers = ThreadedBayesianSearcher.get_searchers(epochs, n_searchers, 10, 20)
 
         targets = tuple([opt.run_optimization for opt in optimizers])
 

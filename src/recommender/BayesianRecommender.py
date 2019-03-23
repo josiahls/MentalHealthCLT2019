@@ -61,7 +61,7 @@ class BayesianRecommender:
         # optimizer.probe(params=data)
 
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        logger = JSONLogger(path=log_path + "/logs.json")
+        logger = JSONLogger(path=log_path + "/raw_logs.json")
         optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
         optimizer.maximize(
@@ -117,4 +117,4 @@ class BayesianRecommender:
 
         now = datetime.now()
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(bayesian_optimizer.results))
+        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(bayesian_optimizer.results))

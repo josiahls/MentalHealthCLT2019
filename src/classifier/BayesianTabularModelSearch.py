@@ -83,8 +83,8 @@ class BayesianSearcher:
         print(str(bayesian_optimizer.results))
 
         now = datetime.now()
-        log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(bayesian_optimizer.results))
+        log_path = os.path.join(str(Path(__file__).parents[0]), "raw_logs")
+        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(bayesian_optimizer.results))
 
     @staticmethod
     def get_top_results_of_opts(optimizers: list, num_top_results, save_results=False):
@@ -103,7 +103,7 @@ class BayesianSearcher:
         if save_results:
             now = datetime.now()
             log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-            json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(results))
+            json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + ".json", pd.DataFrame(results))
         return results
 
     @staticmethod
@@ -121,4 +121,4 @@ class BayesianSearcher:
 
         now = datetime.now()
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
-        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f"), pd.DataFrame(bayesian_optimizer.results))
+        json.to_json(log_path + "/hyper_params" + now.strftime("%Y%m%d-%H%M%S.%f") + '.json', pd.DataFrame(bayesian_optimizer.results))

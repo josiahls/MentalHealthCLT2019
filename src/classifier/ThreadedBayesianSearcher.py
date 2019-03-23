@@ -41,10 +41,11 @@ class ThreadedBayesianSearcher:
             optimizer_threads.append(threading.Thread(target=partial(target,
                                                       evaluation_param_bounds=p_bounds_iter.__next__(),
                                                       num_top_results=2, k_folds=10)))
-            # optimizer_threads[-1].daemon = True
+            optimizer_threads[-1].daemon = True
             optimizer_threads[-1].start()
 
-        for optimizer_thread in optimizer_threads:
+        for i, optimizer_thread in enumerate(optimizer_threads):
+            print(f'Joining thread {i} of {len(optimizer_threads)}')
             optimizer_thread.join()
 
         for result in BayesianSearcher.get_top_results_of_opts(optimizers, 2):

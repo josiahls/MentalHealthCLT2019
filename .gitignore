@@ -57,3 +57,8 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 .idea/
+/src/data/foreveralone.csv
+/src/data/foreveralone_shuf_cleaned.csv
+/src/data/foreveralone_shuf.csv
+/src/data/testcleaner.log
+/src/data/cleaner.log

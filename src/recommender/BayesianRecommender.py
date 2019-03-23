@@ -105,7 +105,7 @@ class BayesianRecommender:
         if not os.path.exists(os.path.join(str(Path(__file__).parents[0]), "raw_logs")):
             os.mkdir(os.path.join(str(Path(__file__).parents[0]), "raw_logs"))
 
-        bayesian_optimizer = BayesianRecommender(10)
+        bayesian_optimizer = BayesianRecommender(100, 200)
         # Init the model with the best params
         model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20})
         best_params = JSONParamReader('classifier/logs').get_best_param()
@@ -120,6 +120,8 @@ class BayesianRecommender:
                 data_parsed += element
 
         data_init = {key: data_parsed[i] for i, key in enumerate(data.names)}
+
+        print(str(data_init))
         cr = bayesian_optimizer.get_ranges(data.names, model.input_data.train_ds)
         column_range = {key: cr[key] for key in cr if key not in DataCsvInterface.FIXED_NAMES}
 

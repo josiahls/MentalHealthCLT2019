@@ -14,9 +14,8 @@ from src.recommender.JSONParamReader import JSONParamReader
 
 
 class BayesianRecommender:
-    def __init__(self, epochs, rand_points=0, iterations=2):
+    def __init__(self, rand_points=0, iterations=2):
         self.results = []
-        self.epochs = epochs
         self.rand_points = rand_points
         self.iterations = iterations
         self.optimizer = None

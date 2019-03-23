@@ -37,7 +37,7 @@ class CustomTabularModel(ModelAbstract):
 
         if stop_early:
             self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout,
-                                     callback_fns=[partial(EarlyStoppingCallback, monitor='accuracy', min_delta=0.01,
+                                     callback_fns=[partial(EarlyStoppingCallback, monitor='accuracy', min_delta=-0.01,
                                                            patience=3)])
         else:
             self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout)

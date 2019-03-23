@@ -50,7 +50,10 @@ class FileCleaner:
 
         return st
 
-    def nf1_series(series, flog, CONTINUOUS_COLS, nf1=True, delim=','):
+    def nf1_series(series, flog, CONTINUOUS_COLS, nf1=True, nf1_tight=None, delim=','):
+        if nf1_tight == None:
+            nf1_tight = nf1
+
         items = set()
         ind = 0
         d = {}
@@ -75,7 +78,10 @@ class FileCleaner:
                     print(el, series)
                     exit(2)
 
-                curnumcell = set()
+                if not nf1_tight:
+                    curnumcell = set()
+                else:
+                    curnumcell = []
 
                 for e in cellitems:
                     # try to convert to a number, else still the string
@@ -89,7 +95,10 @@ class FileCleaner:
                         d[e] = ind
                         drev[ind] = e
 
-                    curnumcell.add(d[e])
+                    if not nf1_tight:
+                        curnumcell.add(d[e])
+                    else:
+                        curnumcell.append(d[e])
                 numarray[i] = curnumcell
             else:
                 # for those that are not 1NF and that are CONTINUOUS_COLS, see if the whole cell can be converted to a float.
@@ -116,23 +125,40 @@ class FileCleaner:
 
 
         if nf1:
+            if not nf1_tight:
 
-            assert len(numarray) == len(series)
+                assert len(numarray) == len(series)
 
-            for newcoli in range(1, ind+1):
-                newseries = []
-                for j in range(len(series)):
-                    if newcoli in numarray[j]:
-                        newseries.append(1)
-                    else:
-                        newseries.append(0)
+                for newcoli in range(1, ind+1):
+                    newseries = []
+                    for j in range(len(series)):
+                        if newcoli in numarray[j]:
+                            newseries.append(1)
+                        else:
+                            newseries.append(0)
 
-                newseries = pd.Series(newseries, name=series.name+"_"+str(newcoli))
-                #newseries.rename(series.name+"_"+str(newcoli)) # using the number for now
-                flog.write((series.name+" "+newseries.name+" "+drev[newcoli]+"\n").encode('utf-8'))
+                    newseries = pd.Series(newseries, name=series.name+"_"+str(newcoli))
+                    #newseries.rename(series.name+"_"+str(newcoli)) # using the number for now
+                    flog.write((series.name+" "+newseries.name+" "+drev[newcoli]+"\n").encode('utf-8'))
 
 
-                resdf = pd.concat([resdf, newseries], axis=1) # horizontal
+                    resdf = pd.concat([resdf, newseries], axis=1) # horizontal
+
+            else:
+                # Represent them as categorical columns
+                numnewcols = max(len(cell) for cell in numarray)
+                print(numnewcols)
+                # see if we can organize this
+                # perform more research with better representing columns in 0NF
+                for newcoli in range(numnewcols):
+                    newseries = []
+                    for j in range(len(series)):
+                        if newcoli < len(numarray[j]):
+                            newseries.append(numarray[j][newcoli])
+                        else:
+                            newseries.append(-1)
+                    resdf = pd.concat([resdf, pd.Series(newseries, name=series.name+"_nf1tight_"+str(newcoli))], axis=1)
+
         else:
             assert len(res) == len(series)
             resdf = pd.concat([resdf, pd.Series(res,name=series.name+"_categorical")], axis=1)

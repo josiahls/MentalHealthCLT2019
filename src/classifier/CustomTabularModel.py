@@ -23,19 +23,24 @@ class CustomTabularModel(ModelAbstract):
         """
         self.args = args
         layers = []
+        stop_early = True
         dropout = 0.5
 
         for arg in [_ for _ in args if str(_).__contains__('layer')]:
             layers.append(int(args[arg]))
 
         for arg in [_ for _ in args if str(_).__contains__('dropout')]:
-            print('Using dropout')
             dropout = float(args[arg])
 
-        self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout,
+        for arg in [_ for _ in args if str(_).__contains__('early_stopping')]:
+            stop_early = arg
+
+        if stop_early:
+            self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout,
                                      callback_fns=[partial(EarlyStoppingCallback, monitor='accuracy', min_delta=0.01,
                                                            patience=3)])
-
+        else:
+            self.model = tabular_learner(self.input_data, layers=layers, metrics=accuracy, emb_drop=dropout)
 
     def train(self, epochs=3, k=1) -> float:
         k_accuracy = []

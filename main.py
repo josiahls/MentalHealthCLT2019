@@ -51,3 +51,4 @@ if __name__ == '__main__':
         BayesianRecommender.test_recommender()
     elif args.run_threaded_bayes_model_generation is not None:
         ThreadedBayesianSearcher.run(args.run_threaded_bayes_model_generation)
+

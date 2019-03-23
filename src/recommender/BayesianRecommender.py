@@ -14,8 +14,12 @@ from src.recommender.JSONParamReader import JSONParamReader
 
 
 class BayesianRecommender:
-    def __init__(self):
+    def __init__(self, epochs, rand_points=0, iterations=2):
         self.results = []
+        self.epochs = epochs
+        self.rand_points = rand_points
+        self.iterations = iterations
+        self.optimizer = None
 
     def run_optimization(self, model, data, evaluation_param_bounds: dict,
                          num_top_results: int = 1):
@@ -48,7 +52,6 @@ class BayesianRecommender:
             # If any variables are being shifted back, then PUNISH
             for key in [_ for _ in params if _ in DataCsvInterface.ONE_WAY_NAMES]:
                 if params[key] > data[key]:
-                    print('Punishing')
                     return 0
 
             # Note we are trying to maximize the first label (not commit suicide)
@@ -75,8 +78,8 @@ class BayesianRecommender:
         optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
         optimizer.maximize(
-            init_points=2,
-            n_iter=3,
+            init_points=self.rand_points,
+            n_iter=self.iterations,
         )
 
         sorted_results = sorted(optimizer.res, key=lambda k: k['target'])
@@ -103,7 +106,7 @@ class BayesianRecommender:
         if not os.path.exists(os.path.join(str(Path(__file__).parents[0]), "raw_logs")):
             os.mkdir(os.path.join(str(Path(__file__).parents[0]), "raw_logs"))
 
-        bayesian_optimizer = BayesianRecommender()
+        bayesian_optimizer = BayesianRecommender(10)
         # Init the model with the best params
         model = CustomTabularModel(0.5, False, 1000, {'layer1': 20, 'layer2': 20})
         best_params = JSONParamReader('classifier/logs').get_best_param()

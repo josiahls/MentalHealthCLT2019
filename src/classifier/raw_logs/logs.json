@@ -1,3 +1,4 @@
-{"target": 0.8180141866207122, "params": {"dropout": 0.417022004702574, "layer1": 288.4094728834211}, "datetime": {"datetime": "2019-03-23 02:50:51", "elapsed": 0.0, "delta": 0.0}}
-{"target": 0.8080378234386444, "params": {"dropout": 0.08827903809915505, "layer1": 31.40368895849584}, "datetime": {"datetime": "2019-03-23 02:51:09", "elapsed": 17.159787, "delta": 17.159787}}
-{"target": 0.8177304863929749, "params": {"dropout": 0.0, "layer1": 399.99998664678014}, "datetime": {"datetime": "2019-03-23 02:51:30", "elapsed": 39.054454, "delta": 21.894667}}
+{"target": 0.8170212745666504, "params": {"dropout": 0.417022004702574, "layer1": 288.4094728834211}, "datetime": {"datetime": "2019-03-23 04:59:52", "elapsed": 0.0, "delta": 0.0}}
+{"target": 0.6919621720910072, "params": {"dropout": 0.08827903809915505, "layer1": 31.40368895849584}, "datetime": {"datetime": "2019-03-23 05:00:06", "elapsed": 13.565084, "delta": 13.565084}}
+{"target": 0.8130023658275605, "params": {"dropout": 0.0, "layer1": 400.0}, "datetime": {"datetime": "2019-03-23 05:00:30", "elapsed": 37.823016, "delta": 24.257932}}
+{"target": 0.8158392548561096, "params": {"dropout": 0.9992521822260733, "layer1": 205.15176846292744}, "datetime": {"datetime": "2019-03-23 05:01:09", "elapsed": 76.634459, "delta": 38.811443}}

@@ -26,15 +26,15 @@ class DataCsvInterface:
     DEPENDENT_NAME = "attempt_suicide_categorical"
     CATEGORY_NAMES = [e+"_categorical" for e in ['gender', 'sexuallity', 'race', 'virgin', 'prostitution_legal', 'pay_for_sex', 'social_fear', 'depressed', 'employment', 'edu_level', 'bodyweight', 'income']]
     CONTINUOUS_NAMES = ['age', 'income_float', 'friends']
-    NF1_NAMES = ['what_help_from_others', 'improve_yourself_how']
+    # NF1_NAMES = ['what_help_from_others', 'improve_yourself_how']
 
     TRASH_NAMES = ['time', 'job_title']
 
-    NF1_CONTINUOUS_NAMES = []
-    NF1_CATEGORICAL_NAMES = ['improve_yourself_how', 'what_help_from_others']
-
-    CATEGORY_NAMES += ['improve_yourself_how_'+str(i) for i in range(1,53+1)]
-    CATEGORY_NAMES += ['what_help_from_others_' + str(i) for i in range(1, 45 + 1)]
+    # NF1_CONTINUOUS_NAMES = []
+    # NF1_CATEGORICAL_NAMES = ['improve_yourself_how', 'what_help_from_others']
+    #
+    # CATEGORY_NAMES += ['improve_yourself_how_'+str(i) for i in range(1,53+1)]
+    # CATEGORY_NAMES += ['what_help_from_others_' + str(i) for i in range(1, 45 + 1)]
 
 
 

@@ -12,7 +12,7 @@ from src.data.DataCsvInterface import DataCsvInterface
 
 
 class BayesianSearcher:
-    def __init__(self, epochs, rand_points=0, iterations=1):
+    def __init__(self, epochs, rand_points=0, iterations=2):
         self.results = []
         self.epochs = epochs
         self.rand_points = rand_points
@@ -55,8 +55,9 @@ class BayesianSearcher:
             random_state=1,
         )
 
-        logger = JSONLogger(path="./logs.json")
-        self.optimizer.subscribe(Events.OPTMIZATION_END, logger)
+        log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
+        logger = JSONLogger(path=log_path+"/logs.json")
+        self.optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
         self.optimizer.maximize(
             init_points=self.rand_points,

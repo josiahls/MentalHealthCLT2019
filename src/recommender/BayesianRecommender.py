@@ -50,6 +50,7 @@ class BayesianRecommender:
         optimizer = BayesianOptimization(
             f=maximization_function,
             pbounds=evaluation_param_bounds,
+            verbose=2,
             random_state=1,
         )
 
@@ -57,15 +58,15 @@ class BayesianRecommender:
         maximizing_value = float(model.predict(data)[2][0])
         print(f'Value to maximize: {maximizing_value}')
 
-        optimizer.probe(params=data)
+        # optimizer.probe(params=data)
 
         log_path = os.path.join(str(Path(__file__).parents[0]), "logs")
         logger = JSONLogger(path=log_path + "/logs.json")
-        optimizer.subscribe(Events.OPTMIZATION_END, logger)
+        optimizer.subscribe(Events.OPTMIZATION_STEP, logger)
 
         optimizer.maximize(
-            init_points=1,
-            n_iter=1,
+            init_points=2,
+            n_iter=3,
         )
 
         sorted_results = sorted(optimizer.res, key=lambda k: k['target'])
